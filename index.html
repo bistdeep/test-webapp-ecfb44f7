@@ -11,6 +11,7 @@
             color: #333;
             margin: 0;
             padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
         }
         h1, h2 {
             color: #2c3e50;
@@ -34,6 +35,21 @@
             height: auto;
             margin-top: 20px;
         }
+        .dark {
+            background-color: #333;
+            color: #f9f9f9;
+        }
+        .dark th {
+            background-color: #555;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            table {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -47,11 +63,13 @@
         <li>Feature 3</li>
     </ul>
     <h2>Configuration</h2>
-    <p>Theme: light</p>
+    <p>Theme: <span id="theme">light</span></p>
     <p>Language: en</p>
     <p>Show Sidebar: true</p>
+    <button id="theme-toggle">Toggle Dark/Light Theme</button>
     <h2>Products</h2>
-    <table>
+    <input type="text" id="filter" placeholder="Filter products..." />
+    <table id="product-table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -61,33 +79,33 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr data-id="1">
                 <td>1</td>
-                <td>Product A</td>
+                <td class="product-name">Product A</td>
                 <td>Electronics</td>
                 <td>$199.99</td>
             </tr>
-            <tr>
+            <tr data-id="2">
                 <td>2</td>
-                <td>Product B</td>
+                <td class="product-name">Product B</td>
                 <td>Books</td>
                 <td>$29.99</td>
             </tr>
-            <tr>
+            <tr data-id="3">
                 <td>3</td>
-                <td>Product C</td>
+                <td class="product-name">Product C</td>
                 <td>Clothing</td>
                 <td>$49.99</td>
             </tr>
-            <tr>
+            <tr data-id="4">
                 <td>4</td>
-                <td>Product D</td>
+                <td class="product-name">Product D</td>
                 <td>Electronics</td>
                 <td>$299.99</td>
             </tr>
-            <tr>
+            <tr data-id="5">
                 <td>5</td>
-                <td>Product E</td>
+                <td class="product-name">Product E</td>
                 <td>Home</td>
                 <td>$89.99</td>
             </tr>
@@ -96,5 +114,33 @@
     <h2>Image</h2>
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAAF..." alt="Test Image">
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const filterInput = document.getElementById('filter');
+        const productTable = document.getElementById('product-table');
+        const themeText = document.getElementById('theme');
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            themeText.textContent = document.body.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+        filterInput.addEventListener('input', () => {
+            const filterValue = filterInput.value.toLowerCase();
+            const rows = productTable.getElementsByTagName('tr');
+            for (let i = 1; i < rows.length; i++) {
+                const productName = rows[i].getElementsByClassName('product-name')[0].textContent.toLowerCase();
+                rows[i].style.display = productName.includes(filterValue) ? '' : 'none';
+            }
+        });
+
+        productTable.addEventListener('click', (event) => {
+            if (event.target.classList.contains('product-name')) {
+                const row = event.target.parentElement;
+                const id = row.getAttribute('data-id');
+                alert('Details for Product ID: ' + id);
+            }
+        });
+    </script>
 </body>
 </html>
